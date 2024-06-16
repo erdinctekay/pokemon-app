@@ -1,85 +1,70 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <v-theme-provider :theme="theme || systemTheme" with-background style="min-height: 100dvh">
+    <TheHeader :theme="theme" :themeItems="themeItems" @setTheme="setTheme" />
+    <main>
+      <RouterView />
+    </main>
+  </v-theme-provider>
 </template>
 
+<script setup lang="ts">
+import TheHeader from '@/components/TheHeader.vue'
+
+import { RouterView } from 'vue-router'
+import { onBeforeMount, onBeforeUnmount, ref } from 'vue'
+import type { SelectedTheme, Theme, ThemeItem } from '@/types/theme'
+
+// variables
+
+const systemTheme = ref<Theme>()
+const theme = ref<SelectedTheme>(null)
+const themeItems = ref<ThemeItem[]>([
+  { title: 'Light', value: 'light', icon: 'mdi-white-balance-sunny' },
+  { title: 'System', value: null, icon: 'mdi-monitor' },
+  { title: 'Dark', value: 'dark', icon: 'mdi-weather-night' }
+])
+
+// listeners
+
+onBeforeMount(() => {
+  systemTheme.value = getSystemTheme()
+
+  const storedTheme = localStorage.getItem('theme')
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', handleSystemThemeChange)
+
+  if (storedTheme) setTheme(storedTheme as Theme)
+})
+
+onBeforeUnmount(() => {
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .removeEventListener('change', handleSystemThemeChange)
+})
+
+// methods
+
+const setMatches = (e: any) => (e.matches ? 'dark' : 'light')
+
+const handleSystemThemeChange = (e: any) => (systemTheme.value = setMatches(e))
+const getSystemTheme = () => setMatches(window.matchMedia('(prefers-color-scheme: dark)'))
+const setTheme = (mode: SelectedTheme) => {
+  const rootElement = document.documentElement
+  if (rootElement.classList.contains('dark-theme')) rootElement.classList.remove('dark-theme')
+  if (rootElement.classList.contains('light-theme')) rootElement.classList.remove('light-theme')
+
+  if (mode === null) {
+    localStorage.removeItem('theme')
+    theme.value = null
+  } else {
+    localStorage.setItem('theme', mode)
+    theme.value = mode
+    rootElement.classList.add(mode + '-theme')
+  }
+}
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
+/* */
 </style>
