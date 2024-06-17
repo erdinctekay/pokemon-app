@@ -20,7 +20,7 @@
         v-model="pokemonStore.page"
         :length="Math.ceil(pokemonStore.total / pokemonStore.take)"
         @input="pokemonStore.setPage"
-        :total-visible="5"
+        :total-visible="totalVisible"
       />
 
       <div style="position: absolute; top: 100px; right: 0; left: 0">
@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, onBeforeUnmount, watch } from 'vue'
+import { onBeforeMount, onBeforeUnmount, ref, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePokemonStore } from '@/stores/pokemon'
 
@@ -54,10 +54,20 @@ const pokemonStore = usePokemonStore()
 onBeforeMount(() => {
   const page = route.query.page
   page ? pokemonStore.setPage(Number(page)) : router.push({ query: { page: pokemonStore.page } })
+  window.addEventListener('resize', handleResize)
 })
 
 onBeforeUnmount(() => {
   pokemonStore.clearErrors()
+  window.removeEventListener('resize', handleResize)
+})
+
+const windowWidth = ref(window.innerWidth)
+const handleResize = () => (windowWidth.value = window.innerWidth)
+const totalVisible = computed(() => {
+  if (windowWidth.value < 540) return 1
+  if (windowWidth.value < 960) return 3
+  return 6
 })
 
 // watch page and trigger route
