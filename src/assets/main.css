@@ -37,6 +37,33 @@ header > * {
   text-transform: none;
 }
 
+.fade-enter-active,
+.fade-leave-active {
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scale(1.025);
+}
+
+@media screen and (min-width: 640px) {
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .scroll-y {
     overflow-y: scroll;

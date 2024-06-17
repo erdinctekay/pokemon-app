@@ -2,7 +2,11 @@
   <v-theme-provider :theme="theme || systemTheme" with-background style="min-height: 100dvh">
     <TheHeader :theme="theme" :themeItems="themeItems" @setTheme="setTheme" />
     <main>
-      <RouterView />
+      <router-view v-slot="{ Component, route }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" :key="route.path" />
+        </transition>
+      </router-view>
     </main>
   </v-theme-provider>
 </template>
@@ -64,7 +68,3 @@ const setTheme = (mode: SelectedTheme) => {
   }
 }
 </script>
-
-<style scoped>
-/* */
-</style>
