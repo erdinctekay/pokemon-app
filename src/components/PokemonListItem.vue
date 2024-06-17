@@ -16,20 +16,14 @@
         />
         <v-progress-circular v-else indeterminate color="primary" size="48" />
       </div>
-      <v-card-title class="select-none"
-        >{{
-          pokemon.name
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
-        }}
-      </v-card-title>
+      <v-card-title class="select-none">{{ convertPokemonName(pokemon.name) }} </v-card-title>
     </v-card>
   </v-col>
 </template>
 <script setup lang="ts">
 import { usePokemonStore } from '@/stores/pokemon'
 import type { Pokemon } from '@/types/pokemon'
+import { convertPokemonName } from '@/utils'
 
 const imgWidth = 135
 const pokemonStore = usePokemonStore()
