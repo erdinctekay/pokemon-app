@@ -21,7 +21,26 @@ export const usePokemonStore = defineStore('pokemon', () => {
   const clearSelectedPokemon = () => (selectedPokemon.value = null)
 
   const goPokemonDetail = (pokemon: Pokemon) => {
-    //
+    setSelectedPokemon(pokemon)
+    router.push({ name: 'pokemon', params: { id: pokemon.name } })
+  }
+
+  const getSelectedPokemon = async (name: string) => {
+    try {
+      const response = await axios.get(`pokemon/${name}`)
+      setSelectedPokemon({
+        name,
+        url: `${axios.defaults.baseURL}pokemon/${name}`,
+        image: pickPokemonImage(response.data.sprites),
+        other: { ...response.data }
+      })
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('Request error')) {
+        router.push({ name: '404' })
+      } else {
+        populateError(error as string)
+      }
+    }
   }
 
   const listPokemons = async () => {
@@ -67,9 +86,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
           const response = await axios.get(`pokemon/${pokemon.name}`)
           return {
             ...pokemon,
-            image:
-              response.data.sprites.other['official-artwork'].front_default ||
-              (response.data.sprites.front_default as string),
+            image: pickPokemonImage(response.data.sprites),
             other: { ...response.data }
           }
         })
@@ -81,9 +98,12 @@ export const usePokemonStore = defineStore('pokemon', () => {
     }
   }
 
+  const pickPokemonImage = (sprites: any) =>
+    sprites.other['official-artwork'].front_default || (sprites.front_default as string)
+
   const populateError = (error: string) => {
     setNewError(error)
-    setTimeout(() => removeError(error), 5000)
+    // setTimeout(() => removeError(error), 5000)
   }
 
   const setPokemons = (newPokemons: Pokemon[]) => (pokemons.value = newPokemons)
@@ -113,6 +133,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
     selectedPokemon,
     setSelectedPokemon,
     clearSelectedPokemon,
+    getSelectedPokemon,
     goPokemonDetail,
 
     page,
