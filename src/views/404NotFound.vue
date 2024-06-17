@@ -9,7 +9,7 @@
       ></v-empty-state>
       <div style="height: 50px"></div>
       <v-btn
-        to="/"
+        to="/?page=1"
         class="text-case"
         color="primary"
         variant="tonal"

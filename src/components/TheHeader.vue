@@ -1,7 +1,7 @@
 <template>
   <v-toolbar :elevation="3" class="flex align-center">
     <v-toolbar-title class="ms-0">
-      <RouterLink to="/" class="flex items-center space-x-2">
+      <RouterLink :to="{ name: 'home', query: { page: 1 } }" class="flex items-center space-x-2">
         <img src="/favicon.png" alt="logo" class="w-12 h-12" />
         <span class="font-semibold hidden sm:block">Pokemon App</span>
       </RouterLink>
