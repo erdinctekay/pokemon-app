@@ -23,4 +23,10 @@
     </div>
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  document.title = 'Pokemon App - 404 '
+})
+</script>

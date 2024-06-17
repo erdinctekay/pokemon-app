@@ -83,6 +83,7 @@ watch(
     if (page) {
       if (page !== String(pokemonStore.page)) pokemonStore.setPage(Number(page))
       pokemonStore.listPokemons()
+      document.title = `Pokemon App - Page ${page}`
     }
   },
   { immediate: true }

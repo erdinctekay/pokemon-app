@@ -17,6 +17,7 @@
             :src="pokemonStore.selectedPokemon.image || `https://via.placeholder.com/${imgWidth}`"
             aspect-ratio="1"
             :height="imgWidth"
+            color="select-none pointer-events-none"
           />
           <div class="text-3xl font-bold">
             {{ convertPokemonName(pokemonStore.selectedPokemon.name) }}
@@ -61,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, onBeforeUnmount } from 'vue'
+import { onBeforeMount, onBeforeUnmount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePokemonStore } from '@/stores/pokemon'
 import { convertPokemonName } from '@/utils'
@@ -78,11 +79,20 @@ onBeforeUnmount(() => {
 })
 
 onBeforeMount(() => {
+  document.title = `Pokemon App  ${pokemonStore.selectedPokemon?.name ? '- ' + convertPokemonName(pokemonStore.selectedPokemon?.name) : ''}`
+
   if (!pokemonStore.selectedPokemon) {
     const id = router.currentRoute.value.params.id
     pokemonStore.getSelectedPokemon(id as string)
   }
 })
+
+watch(
+  () => pokemonStore.selectedPokemon,
+  () => {
+    document.title = `Pokemon App  ${pokemonStore.selectedPokemon?.name ? '- ' + convertPokemonName(pokemonStore.selectedPokemon?.name) : ''}`
+  }
+)
 </script>
 <style scoped>
 .no-item {
