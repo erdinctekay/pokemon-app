@@ -30,91 +30,26 @@
             <v-row>
               <v-col cols="12">
                 <v-list class="bg-transparent">
-                  <v-list-item class="pb-3">
-                    <div class="list-item-title text-lg font-semibold italic pb-2">Types</div>
-                    <div
-                      v-if="
-                        pokemonStore.selectedPokemon.other?.types &&
-                        pokemonStore.selectedPokemon.other.types.length > 0
-                      "
-                      class="chip-container"
-                    >
-                      <v-chip
-                        v-for="type in pokemonStore.selectedPokemon.other?.types"
-                        :key="type.type.name"
-                        class="me-2 my-2"
-                      >
-                        {{ convertPokemonName(type.type.name) }}
-                      </v-chip>
-                    </div>
-                    <div v-else class="no-item">—</div>
-                  </v-list-item>
-                  <v-list-item class="pb-3">
-                    <div class="list-item-title text-lg font-semibold italic pb-2">Abilities</div>
-                    <div
-                      v-if="
-                        pokemonStore.selectedPokemon.other?.abilities &&
-                        pokemonStore.selectedPokemon.other.abilities.length > 0
-                      "
-                      class="chip-container"
-                    >
-                      <v-chip
-                        v-for="ability in pokemonStore.selectedPokemon.other?.abilities"
-                        :key="ability.ability.name"
-                        class="me-2 my-2"
-                      >
-                        {{ convertPokemonName(ability.ability.name) }}
-                      </v-chip>
-                    </div>
-                    <div v-else class="no-item">—</div>
-                  </v-list-item>
-                  <v-list-item class="pb-3">
-                    <div class="list-item-title text-lg font-semibold italic pb-2">Held Items</div>
-                    <div
-                      v-if="
-                        pokemonStore.selectedPokemon.other?.held_items &&
-                        pokemonStore.selectedPokemon.other.held_items?.length > 0
-                      "
-                      class="chip-container"
-                    >
-                      <v-chip
-                        v-for="item in pokemonStore.selectedPokemon.other?.held_items"
-                        :key="item.item.name"
-                        class="me-2 my-2"
-                      >
-                        {{ convertPokemonName(item.item.name) }}
-                      </v-chip>
-                    </div>
-                    <div v-else class="no-item">—</div>
-                  </v-list-item>
-                  <v-list-item class="p-0">
-                    <div class="list-item-title text-lg font-semibold italic pb-2">Moves</div>
-                    <div
-                      v-if="
-                        pokemonStore.selectedPokemon.other?.moves &&
-                        pokemonStore.selectedPokemon.other.moves.length > 0
-                      "
-                      class="chip-container"
-                    >
-                      <v-chip
-                        v-for="move in pokemonStore.selectedPokemon.other?.moves.slice(0, maxChip)"
-                        :key="move.move.name"
-                        class="me-2 my-2"
-                      >
-                        {{ convertPokemonName(move.move.name) }}
-                      </v-chip>
-                      <v-chip
-                        v-if="pokemonStore.selectedPokemon.other.moves.length > maxChip"
-                        class="me-2 my-2"
-                        color="primary"
-                        variant="flat"
-                        style="opacity: 0.7"
-                      >
-                        +{{ pokemonStore.selectedPokemon.other.moves.length - maxChip }} more
-                      </v-chip>
-                    </div>
-                    <div v-else class="no-item">—</div>
-                  </v-list-item>
+                  <PokemonDetailChipList
+                    :items="pokemonStore.selectedPokemon.other?.types ?? []"
+                    attr="type"
+                    title="Types"
+                  />
+                  <PokemonDetailChipList
+                    :items="pokemonStore.selectedPokemon.other?.abilities ?? []"
+                    attr="ability"
+                    title="Abilities"
+                  />
+                  <PokemonDetailChipList
+                    :items="pokemonStore.selectedPokemon.other?.held_items ?? []"
+                    attr="item"
+                    title="Held Items"
+                  />
+                  <PokemonDetailChipList
+                    :items="pokemonStore.selectedPokemon.other?.moves ?? []"
+                    attr="move"
+                    title="Moves"
+                  />
                 </v-list>
               </v-col>
             </v-row>
@@ -131,10 +66,11 @@ import { useRouter } from 'vue-router'
 import { usePokemonStore } from '@/stores/pokemon'
 import { convertPokemonName } from '@/utils'
 
+import PokemonDetailChipList from '@/components/PokemonDetailChipList.vue'
+
 const router = useRouter()
 
 const imgWidth = 200
-const maxChip = 7
 const pokemonStore = usePokemonStore()
 
 onBeforeUnmount(() => {
