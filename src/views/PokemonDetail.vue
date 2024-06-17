@@ -94,11 +94,3 @@ watch(
   }
 )
 </script>
-<style scoped>
-.no-item {
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>

@@ -24,3 +24,11 @@ import { convertPokemonName } from '@/utils'
 const maxChip = 7
 defineProps<{ items: any[]; attr: string; title: string }>()
 </script>
+<style scoped>
+.no-item {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
